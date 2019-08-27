@@ -4,4 +4,6 @@
 #
 # Author: Matt Gill
 
-./payara asadmin "$@"
+SCRIPT_DIR=$(dirname $(readlink -f $0))
+
+${SCRIPT_DIR}/payara asadmin "$@"
