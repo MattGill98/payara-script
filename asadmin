@@ -1,0 +1,7 @@
+#! /bin/bash
+
+# Helper script to call asadmin
+#
+# Author: Matt Gill
+
+./payara asadmin "$@"

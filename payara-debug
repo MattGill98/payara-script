@@ -1,0 +1,7 @@
+#! /bin/bash
+
+# Helper script to debug the Payara Utility Tool
+#
+# Author: Matt Gill
+
+java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 -cp "target/classes:target/lib/*" uk.me.mattgill.payara.tools.Main "$@"

@@ -1,0 +1,7 @@
+#! /bin/bash
+
+# Helper script to call the Payara Utility Tool
+#
+# Author: Matt Gill
+
+java -cp "target/classes:target/lib/*" uk.me.mattgill.payara.tools.Main "$@"
