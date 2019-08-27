@@ -5,7 +5,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Properties;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -17,6 +21,8 @@ public final class ZipUtils {
      * Size of the buffer to read/write data
      */
     private static final int BUFFER_SIZE = 0x800;
+
+    private static final Set<PosixFilePermission> POSIX_FILE_PERMISSIONS = PosixFilePermissions.fromString("rwxr-xr-x");
 
     private static final Logger LOGGER = Logger.getLogger(ZipUtils.class.getName());
 
@@ -137,15 +143,17 @@ public final class ZipUtils {
     }
 
     private static void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
-        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
+        File file = new File(filePath);
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
         byte[] bytesIn = new byte[BUFFER_SIZE];
         int read = 0;
         while ((read = zipIn.read(bytesIn)) != -1) {
             bos.write(bytesIn, 0, read);
         }
         bos.close();
-        if (filePath.contains("bin/")) {
-            new File(filePath).setExecutable(true);
+        if (filePath.contains("bin/") || filePath.contains("lib/")) {
+            file.setExecutable(true);
+            Files.setPosixFilePermissions(file.toPath(), POSIX_FILE_PERMISSIONS);
         }
     }
 }
