@@ -10,6 +10,7 @@ import picocli.CommandLine.IFactory;
 import uk.me.mattgill.payara.tools.commands.Asadmin;
 import uk.me.mattgill.payara.tools.commands.Install;
 import uk.me.mattgill.payara.tools.commands.Kill;
+import uk.me.mattgill.payara.tools.commands.Log;
 import uk.me.mattgill.payara.tools.commands.Reset;
 import uk.me.mattgill.payara.tools.commands.Set;
 import uk.me.mattgill.payara.tools.commands.Start;
@@ -27,7 +28,8 @@ import uk.me.mattgill.payara.tools.inject.CommandFactory;
             Start.class,
             Stop.class,
             Kill.class,
-            Reset.class
+            Reset.class,
+            Log.class
         })
 public class Main implements Runnable {
 
