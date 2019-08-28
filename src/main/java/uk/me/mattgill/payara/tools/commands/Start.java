@@ -6,8 +6,7 @@ import picocli.CommandLine.Command;
 public class Start extends Asadmin {
 
     @Override
-    public void run() {
-        validateConfiguration();
+    public void runCommand() {
         asadmin("start-domain");
     }
 

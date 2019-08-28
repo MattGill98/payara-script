@@ -3,6 +3,7 @@ package uk.me.mattgill.payara.tools.install;
 import static java.util.Arrays.asList;
 import static uk.me.mattgill.payara.tools.util.FileUtils.delete;
 import static uk.me.mattgill.payara.tools.util.PayaraUtils.isDomainRunning;
+import static uk.me.mattgill.payara.tools.util.PayaraUtils.killDomain;
 import static uk.me.mattgill.payara.tools.util.ZipUtils.unzip;
 
 import java.io.File;
@@ -48,31 +49,18 @@ public class Package {
     }
 
     public void uninstall() throws IOException {
-
+        killDomain();
         delete(rootDir);
     }
 
-    public void extract(boolean delete) throws IOException {
-        if (delete) {
-            delete(extractDir);
-        }
+    public void reset() throws IOException {
+        killDomain();
+        delete(extractDir);
+        initialize();
+    }
+
+    public void initialize() throws IOException {
         unzip(zip, extractDir);
-    }
-
-    public String getName() {
-        return rootDir.getName();
-    }
-
-    public File getRootDir() {
-        return rootDir;
-    }
-
-    public File getZip() {
-        return zip;
-    }
-
-    public File getExtractDir() {
-        return extractDir;
     }
 
     public void asadmin(String... args) throws IOException {
@@ -90,6 +78,22 @@ public class Package {
         } catch (InterruptedException ex) {
             throw new IOException("Process interrupted.", ex);
         }
+    }
+
+    public String getName() {
+        return rootDir.getName();
+    }
+
+    public File getRootDir() {
+        return rootDir;
+    }
+
+    public File getZip() {
+        return zip;
+    }
+
+    public File getExtractDir() {
+        return extractDir;
     }
 
     public File getServerLog() {
