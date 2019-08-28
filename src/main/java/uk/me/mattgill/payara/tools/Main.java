@@ -12,6 +12,7 @@ import uk.me.mattgill.payara.tools.commands.Install;
 import uk.me.mattgill.payara.tools.commands.Kill;
 import uk.me.mattgill.payara.tools.commands.Log;
 import uk.me.mattgill.payara.tools.commands.Reset;
+import uk.me.mattgill.payara.tools.commands.Restart;
 import uk.me.mattgill.payara.tools.commands.Set;
 import uk.me.mattgill.payara.tools.commands.Start;
 import uk.me.mattgill.payara.tools.commands.Status;
@@ -27,6 +28,7 @@ import uk.me.mattgill.payara.tools.inject.CommandFactory;
             Set.class,
             Start.class,
             Stop.class,
+            Restart.class,
             Kill.class,
             Reset.class,
             Log.class
