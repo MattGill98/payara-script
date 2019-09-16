@@ -8,6 +8,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.IFactory;
 import uk.me.mattgill.payara.tools.commands.Asadmin;
+import uk.me.mattgill.payara.tools.commands.Deploy;
 import uk.me.mattgill.payara.tools.commands.Install;
 import uk.me.mattgill.payara.tools.commands.Kill;
 import uk.me.mattgill.payara.tools.commands.Log;
@@ -28,6 +29,7 @@ import uk.me.mattgill.payara.tools.inject.CommandFactory;
             Set.class,
             Start.class,
             Stop.class,
+            Deploy.class,
             Restart.class,
             Kill.class,
             Reset.class,
