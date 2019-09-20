@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.inject.Inject;
 
+import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -58,7 +59,7 @@ public class Set extends CustomCommand {
             configured = true;
         }
         if (!configured) {
-            help.prompt();
+            CommandLine.usage(this, System.out);
         }
     }
 
