@@ -22,7 +22,7 @@ export const asadmin = (...argv) => {
 /**
  * @param {Argv} argv the Yargs instance
  */
-export const builder = argv => 
+export const builder = argv =>
   argv
     .help()
     .check(() => {

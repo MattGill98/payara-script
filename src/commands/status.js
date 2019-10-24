@@ -14,7 +14,7 @@ export const desc = 'List the installed Payara environments, and which one is se
 export const listPackages = handler => {
   return fs.readdirSync(directory).filter((dir) => {
     if (fs.existsSync(path.resolve(directory, dir , 'appserver', 'glassfish', 'domains', 'domain1'))) {
-      return handler(dir);
+      return handler? handler(dir) : true;
     }
     return false;
   });
