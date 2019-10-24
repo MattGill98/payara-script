@@ -1,9 +1,0 @@
-#! /bin/bash
-
-# Helper script to call asadmin
-#
-# Author: Matt Gill
-
-SCRIPT_DIR=$(dirname $(readlink -f $0))
-
-${SCRIPT_DIR}/payara asadmin "$@"
