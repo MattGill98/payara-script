@@ -12,11 +12,13 @@ import { fstat } from 'fs';
 export const command = 'asadmin <command>';
 export const desc = 'Execute an asadmin command';
 
+const asadminUtility = process.platform === 'win32'? 'asadmin.bat' : 'asadmin';
+
 /**
  * @param {Array} argv an array 
  */
 export const asadmin = (...argv) => {
-  spawn('asadmin', argv, {
+  spawn(asadminUtility, argv, {
     stdio: 'inherit',
     cwd: path.resolve(config.get('directory'), config.get('active').toString(), globals.UNZIP_NAME, 'bin')
   });
