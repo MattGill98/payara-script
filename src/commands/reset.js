@@ -9,6 +9,7 @@ const fs = require('fs').promises;
 import {mkdtempSync} from 'fs';
 import rimraf from 'rimraf';
 import { handleError } from '../util/error';
+import { builder as asadminBuilder } from './asadmin';
 import path from 'path';
 import globals from '../util/globals';
 import extract from 'progress-extract';
@@ -19,9 +20,7 @@ export const desc = 'Reset a Payara environment to a fresh install';
 /**
  * @param {Argv} argv the Yargs instance
  */
-export const builder = argv => 
-  argv
-    .help();
+export const builder = argv => asadminBuilder(argv);
 
 function findData(packageDir) {
   return {

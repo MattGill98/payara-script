@@ -29,7 +29,7 @@ export const builder = argv =>
     .check(({value}) => {
       let valid = false;
       listPackages(pkg => {
-        if (pkg === value) {
+        if (pkg == value) {
           valid = true;
         }
       });

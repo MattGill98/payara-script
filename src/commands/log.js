@@ -5,6 +5,7 @@ import config from '../config';
 import path from 'path';
 import { builder as asadminBuilder } from './asadmin';
 import { Tail } from 'tail';
+import globals from '../util/globals';
 
 export const command = 'log';
 export const desc = 'Follow the Payara log';
@@ -18,8 +19,8 @@ export const handler = argv => {
   console.log('Following the Payara log...');
   let logFile = path.resolve(
     config.get('directory'),
-    config.get('active'),
-    'appserver',
+    config.get('active').toString(),
+    globals.UNZIP_NAME,
     'glassfish',
     'domains',
     'domain1',
