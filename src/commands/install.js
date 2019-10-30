@@ -58,7 +58,7 @@ export const handler = argv => {
                   // Unzip the artifact
                   unzip(dir);
                 }, handleError('Failed to rename ZIP file'));
-            }, handleError('Download failed'))
+            }, handleError('Download failed', () => fs.rmdir(dir)))
         }, handleError('Failed to resolve artifact'));
     }, handleError('Failed to create directory for artifact'));
 };

@@ -16,6 +16,11 @@ export default function(url, path) {
 
   return new Promise(function(resolve, reject) {
     const request = http.get(uri.href).on('response', function(res) {
+      if (res.statusCode > 299) {
+        fs.unlink(path, () => {})
+        reject(new Error(`${uri.path} not found.`))
+        return
+      } 
       const len = parseInt(res.headers['content-length'], 10)
       let downloaded = 0
       let percent = 0
@@ -26,7 +31,7 @@ export default function(url, path) {
           percent = (100.0 * downloaded / len).toFixed(2)
           process.stdout.write(`Downloading ${percent}% ${downloaded} bytes\r`)
         })
-        .on('end', function() {
+        .on('end', function(res) {
           file.end()
           console.log(`${uri.path} downloaded to: ${path}`)
           resolve(path)
