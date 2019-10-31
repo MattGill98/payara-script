@@ -1,6 +1,6 @@
 import ConfigStore from 'configstore';
 import packageJson from '../package.json';
-import fs from 'fs';
+import fs from 'promise-fs';
 import path from 'path';
 
 const defaultConfig = {

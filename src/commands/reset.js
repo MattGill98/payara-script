@@ -5,7 +5,7 @@
 import config from '../config';
 import os from 'os';
 import { ncp } from 'ncp';
-const fs = require('fs').promises;
+import fs from 'promise-fs';
 import {mkdtempSync} from 'fs';
 import rimraf from 'rimraf';
 import { handleError } from '../util/error';
@@ -42,14 +42,12 @@ export const unzip = packageDir => {
               throw err;
             }
             console.log('Extract completed!');
-            rimraf(data.temp, err => {
-              if (err) {
-                handleError('Unable to delete temp directory')(err);
-              }
-            });
+            rimraf(data.temp, handleError('Unable to delete temp directory'));
           });
-        }, handleError('Failed to read from extracted directory'));
-    }, handleError('Failed to extract artifact'));
+        })
+        .catch(handleError('Failed to read from extracted directory'));
+    })
+    .catch(handleError('Failed to extract artifact'));
 };
 
 /**

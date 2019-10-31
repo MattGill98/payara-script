@@ -4,10 +4,9 @@
  */
 import config from '../config';
 import path from 'path';
-import fs from 'fs';
+import fs from 'promise-fs';
 import { spawn } from 'child_process';
 import globals from '../util/globals';
-import { fstat } from 'fs';
 
 export const command = 'asadmin <command>';
 export const desc = 'Execute an asadmin command';

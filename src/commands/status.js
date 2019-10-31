@@ -3,7 +3,7 @@
  * @typedef {import('yargs').Arguments} Arguments
  */
 import config from '../config';
-import fs from 'fs';
+import fs from 'promise-fs';
 import path from 'path';
 import globals from '../util/globals';
 

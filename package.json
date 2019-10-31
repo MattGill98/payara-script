@@ -25,6 +25,7 @@
     "mvn-artifact-url": "^4.0.0",
     "ncp": "^2.0.0",
     "progress-extract": "^1.0.2",
+    "promise-fs": "^2.1.1",
     "regenerator-runtime": "^0.13.3",
     "rimraf": "^3.0.0",
     "tail": "^2.0.3",

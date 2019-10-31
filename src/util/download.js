@@ -5,6 +5,24 @@ const { basename, resolve } = require('path')
 
 const TIMEOUT = 60000
 
+/**
+ * @param {String} url the URL to check the existence of
+ */
+export const exists = url => new Promise((resolve, reject) => {
+  http.get(url).on('response', ({ statusCode }) => {
+    if (statusCode >= 300 || statusCode < 200) {
+      reject(statusCode);
+    } else {
+      resolve(url);
+    }
+  });
+});
+
+/**
+ * 
+ * @param {String} url the URL to download
+ * @param {String} path the path to download the URL to
+ */
 export default function(url, path) {
   const uri = parse(url)
   if (!path) {
