@@ -75,8 +75,9 @@ export const handler = argv => {
               if (statusCodes.includes(401)) {
                 console.error('Nexus authentication failed.');
               } else {
-                console.error('Artifact not found.')
+                console.error('Artifact not found.');
               }
+              rimraf(dir, () => {});
             })
             .catch(resolved => {
               // Download the artifact
