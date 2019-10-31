@@ -7,12 +7,11 @@ import fs from 'fs';
 import path from 'path';
 import globals from '../util/globals';
 
-const directory = config.get('directory');
-
 export const command = 'status';
 export const desc = 'List the installed Payara environments, and which one is selected';
 
 export const listPackages = handler => {
+  let directory = config.get('directory');
   return fs.readdirSync(directory).filter((dir) => {
     if (fs.existsSync(path.resolve(directory, dir , globals.UNZIP_NAME, 'glassfish', 'domains', 'domain1'))) {
       return handler? handler(dir) : true;

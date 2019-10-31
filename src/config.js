@@ -1,11 +1,16 @@
 import ConfigStore from 'configstore';
 import packageJson from '../package.json';
+import fs from 'fs';
+import path from 'path';
 
 const defaultConfig = {
   username: null,
   password: null,
-  directory: require('os').homedir() + '/payara',
+  directory: path.resolve(require('os').homedir(), 'payara/'),
   active: null
 };
+
+// Create base directory
+fs.mkdir(defaultConfig.directory, () => {});
 
 export default new ConfigStore(packageJson.name, defaultConfig);
