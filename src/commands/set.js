@@ -18,25 +18,24 @@ function configureVariable(name, displayName = name) {
   };
 };
 
-export const handler = configureVariable('active', 'Payara environment');
+export const handler = argv => {
+  let valid = false;
+  listPackages(pkg => {
+    if (pkg == value) {
+      valid = true;
+    }
+  });
+  if (!valid) {
+    throw 'Invalid environment name.'
+  }
+  configureVariable('active', 'Payara environment')(argv);
+};
 
 /**
  * @param {Argv} argv the Yargs instance
  */
-export const builder = argv => 
+export const builder = argv =>
   argv
     .help()
-    .check(({value}) => {
-      let valid = false;
-      listPackages(pkg => {
-        if (pkg == value) {
-          valid = true;
-        }
-      });
-      if (!valid) {
-        throw 'Invalid environment name.'
-      }
-      return true;
-    })
     .command('username <value>', 'Configure the nexus username', () => {}, configureVariable('username', 'Username'))
     .command('password <value>', 'Configure the nexus password', () => {}, configureVariable('password', 'Password'));
