@@ -5,6 +5,7 @@
 import config from '../config';
 import { listPackages } from './status';
 
+// Command Details
 export const command = 'set [option] <value>';
 export const desc = 'Configure the active Payara environment';
 
@@ -18,19 +19,6 @@ function configureVariable(name, displayName = name) {
   };
 };
 
-export const handler = argv => {
-  let valid = false;
-  listPackages(pkg => {
-    if (pkg == argv.value) {
-      valid = true;
-    }
-  });
-  if (!valid) {
-    throw 'Invalid environment name.'
-  }
-  configureVariable('active', 'Payara environment')(argv);
-};
-
 /**
  * @param {Argv} argv the Yargs instance
  */
@@ -39,3 +27,22 @@ export const builder = argv =>
     .help()
     .command('username <value>', 'Configure the nexus username', () => {}, configureVariable('username', 'Username'))
     .command('password <value>', 'Configure the nexus password', () => {}, configureVariable('password', 'Password'));
+
+/**
+ * @param {Arguments} argv the Yargs arguments
+ */
+export const handler = async argv => {
+  listPackages().then(packages => {
+    let valid = false;
+    packages.forEach(pkg => {
+      if (pkg == argv.value) {
+        valid = true;
+      }
+    });
+    if (valid) {
+      configureVariable('active', 'Payara environment')(argv);
+    } else {
+      console.error('Invalid environment name')
+    }
+  });
+};

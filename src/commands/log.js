@@ -1,15 +1,20 @@
 /**
+ * @typedef {import('yargs').Argv} Argv
  * @typedef {import('yargs').Arguments} Arguments
  */
-import config from '../config';
 import path from 'path';
-import asadmin, { builder as asadminBuilder } from '../util/asadmin';
 import { Tail } from 'tail';
+import config from '../config';
+import { builder as asadminBuilder } from '../util/asadmin';
 import globals from '../util/globals';
 
+// Command Details
 export const command = 'log';
 export const desc = 'Follow the Payara log';
 
+/**
+ * @param {Argv} argv the Yargs instance
+ */
 export const builder = argv => asadminBuilder(argv);
 
 /**

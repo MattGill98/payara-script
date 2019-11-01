@@ -2,21 +2,22 @@
  * @typedef {import('yargs').Argv} Argv
  * @typedef {import('yargs').Arguments} Arguments
  */
-import asadmin, { builder as asadminBuilder } from '../util/asadmin';
 import ps from 'find-process';
 
+// Command Details
 export const command = 'kill';
 export const desc = 'Kills all Payara processes';
 
 /**
- * @param {Argv} argv the Yargs instance
+ * @return {Promise<Array>} a promise that resolves to a list of all running Payara processes
  */
-export const builder = argv => asadminBuilder(argv);
-
 async function listProcesses() {
   return ps('name', /java.+glassfish.jar/);
 }
 
+/**
+ * @return {boolean} a promise that resolves to whether there is a Payara instance running or not
+ */
 export async function checkStatus() {
   var processes = await listProcesses();
   return processes && processes.length;

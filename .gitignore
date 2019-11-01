@@ -6,5 +6,5 @@
 .vscode/
 
 # NodeJS
-build/
+lib/
 node_modules/

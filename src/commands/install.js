@@ -3,19 +3,21 @@
  * @typedef {import('yargs').Arguments} Arguments
  * @typedef {import('mvn-artifact-url').Artifact} Artifact
  */
-import config from '../config';
-import { listPackages } from './status';
-import { handleError } from '../util/error';
-import fs from 'promise-fs';
-import rimraf from 'rimraf';
-import path from 'path';
-import globals from '../util/globals';
+import fs from 'fs';
 import url from 'mvn-artifact-url';
+import path from 'path';
+import rimraf from 'rimraf';
+import config from '../config';
 import download, { exists } from '../util/download';
+import { handleError } from '../util/error';
+import globals from '../util/globals';
+import { copyFile, mkdir, rename } from '../util/promise-fs';
 import { unzip } from './reset';
+import { listPackages } from './status';
 
+// Command Details
 export const command = 'install [options] <artifact>';
-export const desc = 'Install a Payara environment from Maven';
+export const desc = 'Install a Payara ZIP';
 
 /**
  * @param {Argv} argv the Yargs instance
@@ -23,9 +25,11 @@ export const desc = 'Install a Payara environment from Maven';
 export const builder = argv => 
   argv
     .help()
-    .check(argv => {
+    .check(async argv => {
       // If the selected artifact is a file
-      if (fs.existsSync(argv.artifact)) {
+      if (isLocalFile(argv.artifact)) {
+        argv.artifact = path.resolve(argv.artifact.toString());
+        // Default the name to 'local'
         if (!argv.name) {
           argv.name = 'local'
         }
@@ -33,22 +37,32 @@ export const builder = argv =>
         // Assume the artifact is a version
         argv.name = argv.artifact;
       }
-      if (listPackages().includes(argv.name)) {
+      if ((await listPackages()).includes(argv.name)) {
         throw 'That artifact is already installed.';
       }
       return true;
     })
     .option('name', {
       alias: 'n',
-      description: 'The name to install the artifact under'
-    });
+      description: 'The name of the installation folder'
+    })
+    .example('$0 install 5.191', 'Install Payara version 5.191 from maven central.')
+    .example('$0 install 5.193.RC3', 'Install Payara version 5.193.RC3 from the Payara nexus. Requires that the nexus credentials be configured via \'payara set\'.')
+    .example('$0 install --name local /path/to/jar', 'Install a local Payara ZIP and call it \'local\'.');
 
+// Check if the provided option is referencing a local file
+function isLocalFile(location) {
+  return fs.existsSync(location.toString()) || fs.existsSync(path.resolve(location.toString()));
+}
+
+// A list of repositories to try and download from
 const repositories = [
   undefined,
   'https://nexus.payara.fish/service/local/repositories/payara-patches/content/',
   'https://nexus.payara.fish/service/local/repositories/payara-staging/content/'
 ];
 
+// Get configured nexus credentials
 const username = config.get('username');
 const password = config.get('password');
 
@@ -64,16 +78,17 @@ export const handler = argv => {
   // Delete the install directory if it exists
   rimraf(dir, () => {
     // Create the install directory
-    fs.mkdir(dir)
+    mkdir(dir)
       .then(() => {
+        // If the artifact is a local file
         if (fs.existsSync(argv.artifact)) {
           // Copy the ZIP
-          fs.copyFile(argv.artifact, path.resolve(dir, globals.ZIP_NAME))
-          .then(() => {
-            // Unzip the artifact
-            unzip(dir);
-          })
-          .catch(handleError('Failed to rename ZIP file'));
+          copyFile(argv.artifact, path.resolve(dir, globals.ZIP_NAME))
+            .then(() => {
+              // Unzip the artifact
+              unzip(dir);
+            })
+            .catch(handleError('Failed to rename ZIP file'));
         } else {
           /**
            * The artifact to download
@@ -111,7 +126,7 @@ export const handler = argv => {
                   download(resolved, dir, username, password).then(artifact => {
                     console.log('Downloaded Payara from maven.');
                     // Rename the ZIP
-                    fs.rename(artifact, path.resolve(dir, globals.ZIP_NAME))
+                    rename(artifact, path.resolve(dir, globals.ZIP_NAME))
                       .then(() => {
                         // Unzip the artifact
                         unzip(dir);

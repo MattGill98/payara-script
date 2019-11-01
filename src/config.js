@@ -1,7 +1,7 @@
 import ConfigStore from 'configstore';
-import packageJson from '../package.json';
-import fs from 'promise-fs';
 import path from 'path';
+import packageJson from '../package.json';
+import { mkdir } from './util/promise-fs';
 
 const defaultConfig = {
   username: null,
@@ -11,6 +11,6 @@ const defaultConfig = {
 };
 
 // Create base directory
-fs.mkdir(defaultConfig.directory, () => {});
+mkdir(defaultConfig.directory, () => {});
 
 export default new ConfigStore(packageJson.name, defaultConfig);

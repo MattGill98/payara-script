@@ -2,21 +2,22 @@
  * @typedef {import('yargs').Argv} Argv
  * @typedef {import('yargs').Arguments} Arguments
  */
-import config from '../config';
-import os from 'os';
+import { mkdtempSync } from 'fs';
 import { ncp } from 'ncp';
-import fs from 'promise-fs';
-import {mkdtempSync} from 'fs';
-import rimraf from 'rimraf';
-import { handleError } from '../util/error';
-import asadmin, { builder as asadminBuilder } from '../util/asadmin';
+import os from 'os';
 import path from 'path';
-import globals from '../util/globals';
 import extract from 'progress-extract';
+import rimraf from 'rimraf';
+import config from '../config';
+import { builder as asadminBuilder } from '../util/asadmin';
+import { handleError } from '../util/error';
+import globals from '../util/globals';
+import { readdir } from '../util/promise-fs';
 const kill = require('./kill').handler;
 
+// Command Details
 export const command = 'reset';
-export const desc = 'Reset a Payara environment to a fresh install';
+export const desc = 'Reset a Payara environment';
 
 /**
  * @param {Argv} argv the Yargs instance
@@ -35,7 +36,7 @@ export const unzip = packageDir => {
   let data = findData(packageDir);
   extract(data.zip, data.temp)
     .then(() => {
-      fs.readdir(data.temp)
+      readdir(data.temp)
         .then(contents => {
           let variableDirName = path.resolve(data.temp, contents[0]);
           ncp(variableDirName, data.explode, err => {

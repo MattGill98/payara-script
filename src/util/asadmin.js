@@ -1,13 +1,14 @@
-import config from '../config';
-import path from 'path';
 import { spawn } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import config from '../config';
 import globals from '../util/globals';
-import fs from 'promise-fs';
 
 const asadminUtility = process.platform === 'win32'? 'asadmin.bat' : './asadmin';
 
 /**
  * @param {Argv} argv the Yargs instance
+ * @returns {Argv} the Yargs instance, after checking that the active environment is valid
  */
 export const builder = argv =>
   argv

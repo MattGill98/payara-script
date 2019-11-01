@@ -3,8 +3,9 @@
  */
 import config from '../config';
 
+// Command Details
 export const command = 'get';
-export const desc = 'Get credentials';
+export const desc = 'Get script configuration';
 
 /**
  * @param {Arguments} argv the Yargs arguments
