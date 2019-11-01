@@ -5,6 +5,7 @@
  * @typedef {import('yargs').Arguments} Arguments
  */
 import asadmin, { builder as asadminBuilder } from '../util/asadmin';
+import path from 'path';
 
 // Command Details
 export const command = 'deploy <app>';
@@ -20,5 +21,5 @@ export const builder = argv => asadminBuilder(argv);
  */
 export const handler = argv => {
   console.log('Deploying Payara Server...');
-  asadmin('deploy', '--force', '--name', 'app', '--contextroot', '/', argv.app);
+  asadmin('deploy', '--force', '--name', 'app', '--contextroot', '/', path.resolve(argv.app));
 };
