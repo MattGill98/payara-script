@@ -9,7 +9,7 @@ import fs from 'promise-fs';
 import {mkdtempSync} from 'fs';
 import rimraf from 'rimraf';
 import { handleError } from '../util/error';
-import { builder as asadminBuilder } from './asadmin';
+import asadmin, { builder as asadminBuilder } from '../util/asadmin';
 import path from 'path';
 import globals from '../util/globals';
 import extract from 'progress-extract';

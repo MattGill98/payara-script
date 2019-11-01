@@ -2,7 +2,7 @@
  * @typedef {import('yargs').Argv} Argv
  * @typedef {import('yargs').Arguments} Arguments
  */
-import { builder as asadminBuilder } from './asadmin';
+import asadmin, { builder as asadminBuilder } from '../util/asadmin';
 import ps from 'find-process';
 
 export const command = 'kill';

@@ -1,7 +1,7 @@
 /**
  * @typedef {import('yargs').Arguments} Arguments
  */
-import { asadmin, builder as asadminBuilder } from './asadmin';
+import asadmin, { builder as asadminBuilder } from '../util/asadmin';
 
 export const command = 'stop';
 export const desc = 'Stop the running Payara instance';

@@ -3,7 +3,7 @@
  */
 import config from '../config';
 import path from 'path';
-import { builder as asadminBuilder } from './asadmin';
+import asadmin, { builder as asadminBuilder } from '../util/asadmin';
 import { Tail } from 'tail';
 import globals from '../util/globals';
 

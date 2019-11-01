@@ -3,7 +3,8 @@ import yargs from 'yargs';
 import 'regenerator-runtime/runtime';
 
 yargs
-    .usage('Usage: $0 <command> [options]')
+    .scriptName('payara')
+    .usage('Usage: payara <command> [options]')
     .commandDir('commands')
     .help()
     .demandCommand()

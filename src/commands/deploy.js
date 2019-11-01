@@ -4,7 +4,7 @@
  * @typedef {import('yargs').Argv} Argv
  * @typedef {import('yargs').Arguments} Arguments
  */
-import { asadmin, builder as asadminBuilder } from './asadmin';
+import asadmin, { builder as asadminBuilder } from '../util/asadmin';
 
 // Command Details
 export const command = 'deploy <app>';

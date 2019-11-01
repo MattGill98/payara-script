@@ -1,6 +1,12 @@
 #!/usr/bin/env node
+import yargs from 'yargs';
+import 'regenerator-runtime/runtime';
+import asadmin, { builder as asadminBuilder } from './util/asadmin';
 
-let commandIndex = process.argv.findIndex(argument => argument.includes('/bin/asadmin'));
-process.argv.splice(commandIndex + 1, 0, 'asadmin');
+var argv = asadminBuilder(yargs
+    .scriptName('asadmin')
+    .usage('Usage: asadmin <command>')
+    .strict())
+    .parse();
 
-require('./index');
+asadmin(argv.command);
