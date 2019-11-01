@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "bin": {
-    "payara": "build/index.js"
+    "payara": "build/index.js",
+    "asadmin": "build/asadmin.js"
   },
   "scripts": {
     "clean": "rimraf build",

@@ -8,4 +8,4 @@ yargs
     .help()
     .demandCommand()
     .strict()
-    .argv;
+    .parse();
