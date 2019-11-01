@@ -11,7 +11,7 @@ import globals from '../util/globals';
 export const command = 'asadmin <command>';
 export const desc = 'Execute an asadmin command';
 
-const asadminUtility = process.platform === 'win32'? '.\asadmin.bat' : './asadmin';
+const asadminUtility = process.platform === 'win32'? 'asadmin.bat' : './asadmin';
 
 /**
  * @param {Array} argv an array 
