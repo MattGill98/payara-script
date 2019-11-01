@@ -22,6 +22,7 @@
     "@types/yargs": "^13.0.3",
     "configstore": "^5.0.0",
     "eslint": "^6.5.1",
+    "find-process": "^1.4.2",
     "mvn-artifact-url": "^4.0.0",
     "ncp": "^2.0.0",
     "progress-extract": "^1.0.2",

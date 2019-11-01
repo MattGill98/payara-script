@@ -13,6 +13,7 @@ import { builder as asadminBuilder } from './asadmin';
 import path from 'path';
 import globals from '../util/globals';
 import extract from 'progress-extract';
+const kill = require('./kill').handler;
 
 export const command = 'reset';
 export const desc = 'Reset a Payara environment to a fresh install';
@@ -54,6 +55,7 @@ export const unzip = packageDir => {
  * @param {Arguments} argv the Yargs arguments
  */
 export const handler = argv => {
+  kill();
   console.log('Resetting Payara environment...');
 
   // Find the active package directory
