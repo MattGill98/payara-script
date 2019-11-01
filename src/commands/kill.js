@@ -13,11 +13,20 @@ export const desc = 'Kills all Payara processes';
  */
 export const builder = argv => asadminBuilder(argv);
 
+async function listProcesses() {
+  return ps('name', /java.+glassfish.jar/);
+}
+
+export async function checkStatus() {
+  var processes = await listProcesses();
+  return processes && processes.length;
+}
+
 /**
  * @param {Arguments} argv the Yargs arguments
  */
 export const handler = argv => {
-  ps('name', /java.+glassfish.jar/).then(processes => {
+  listProcesses().then(processes => {
     if (processes && processes.length) {
       console.log('Killing Payara processes...');
       processes.forEach(({pid}) => {

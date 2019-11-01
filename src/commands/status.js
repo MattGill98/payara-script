@@ -6,6 +6,7 @@ import config from '../config';
 import fs from 'promise-fs';
 import path from 'path';
 import globals from '../util/globals';
+import { isRunning, checkStatus } from './kill';
 
 export const command = 'status';
 export const desc = 'List the installed Payara environments, and which one is selected';
@@ -32,11 +33,17 @@ export const builder = argv =>
  */
 export const handler = argv => {
   console.log('Available Payara environments:');
-  listPackages(pkg => {
-    if (pkg == config.get('active')) {
-      console.log(pkg + ' (active)')
-    } else {
-      console.log(pkg);
-    }
+
+  checkStatus().then(running => {
+    listPackages(pkg => {
+      let msg = pkg;
+      if (pkg == config.get('active')) {
+        msg += ' (active)';
+        if (running) {
+          msg += ' (running)';
+        }
+      }
+      console.log(msg);
+    });
   });
 };
