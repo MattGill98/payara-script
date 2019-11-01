@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 
-process.argv.pop();
-
-process.argv.push('payara');
-
-process.argv.push('asadmin');
+let commandIndex = process.argv.findIndex(argument => argument.includes('/bin/asadmin'));
+process.argv.splice(commandIndex + 1, 0, 'asadmin');
 
 require('./index');
