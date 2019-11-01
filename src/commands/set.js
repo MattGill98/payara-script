@@ -21,7 +21,7 @@ function configureVariable(name, displayName = name) {
 export const handler = argv => {
   let valid = false;
   listPackages(pkg => {
-    if (pkg == value) {
+    if (pkg == argv.value) {
       valid = true;
     }
   });
