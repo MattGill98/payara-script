@@ -36,6 +36,9 @@ const repositories = [
   'https://nexus.payara.fish/service/local/repositories/payara-staging/content/'
 ];
 
+const username = config.get('username');
+const password = config.get('password');
+
 /**
  * @param {Arguments} argv the Yargs arguments
  */
@@ -45,55 +48,58 @@ export const handler = argv => {
   // Get install directory
   let dir = path.resolve(config.get('directory'), argv.name.toString());
 
-  // Create the install directory
-  fs.mkdir(dir)
-    .then(() => {
-      /**
-       * The artifact to download
-       * @type Artifact
-       */
-      let artifact = {
-        groupId: 'fish.payara.distributions',
-        artifactId: 'payara',
-        version: argv.name,
-        extension: 'zip'
-      };
-
-      let urls = repositories.map(repository => url(artifact, repository));
-
-      // Resolve all URLs to download from
-      Promise.all(urls).then(resolvedUrls => {
-
-        // Get the first promised URL that can be downloaded by inverting the promises
-        var invertedPromiseList = resolvedUrls
-          .map(resolvedUrl => exists(resolvedUrl))
-          .map(promise => promise.then(result => Promise.reject(result), err => Promise.resolve(err)));
-
-        // Break on early exiting promise
-        Promise.all(invertedPromiseList)
-            .then(statusCodes => {
-              if (statusCodes.includes(401)) {
-                console.error('Nexus authentication failed.');
-              } else {
-                console.error('Artifact not found.');
-              }
-              rimraf(dir, () => {});
-            })
-            .catch(resolved => {
-              // Download the artifact
-              download(resolved, dir).then(artifact => {
-                console.log('Downloaded Payara from maven.');
-                // Rename the ZIP
-                fs.rename(artifact, path.resolve(dir, globals.ZIP_NAME))
-                  .then(() => {
-                    // Unzip the artifact
-                    unzip(dir);
-                  })
-                  .catch(handleError('Failed to rename ZIP file'));
+  // Delete the install directory if it exists
+  rimraf(dir, () => {
+    // Create the install directory
+    fs.mkdir(dir)
+      .then(() => {
+        /**
+         * The artifact to download
+         * @type Artifact
+         */
+        let artifact = {
+          groupId: 'fish.payara.distributions',
+          artifactId: 'payara',
+          version: argv.name,
+          extension: 'zip'
+        };
+  
+        let urls = repositories.map(repository => url(artifact, repository));
+  
+        // Resolve all URLs to download from
+        Promise.all(urls).then(resolvedUrls => {
+  
+          // Get the first promised URL that can be downloaded by inverting the promises
+          var invertedPromiseList = resolvedUrls
+            .map(resolvedUrl => exists(resolvedUrl, username, password))
+            .map(promise => promise.then(result => Promise.reject(result), err => Promise.resolve(err)));
+  
+          // Break on early exiting promise
+          Promise.all(invertedPromiseList)
+              .then(statusCodes => {
+                if (statusCodes.includes(401)) {
+                  console.error('Nexus authentication failed.');
+                } else {
+                  console.error('Artifact not found.');
+                }
+                rimraf(dir, () => {});
               })
-              .catch(handleError('Download failed', () => rimraf(dir, () => {})))
-            })
-      });
-    })
-    .catch(handleError('Failed to create directory for artifact'));
+              .catch(resolved => {
+                // Download the artifact
+                download(resolved, dir, username, password).then(artifact => {
+                  console.log('Downloaded Payara from maven.');
+                  // Rename the ZIP
+                  fs.rename(artifact, path.resolve(dir, globals.ZIP_NAME))
+                    .then(() => {
+                      // Unzip the artifact
+                      unzip(dir);
+                    })
+                    .catch(handleError('Failed to rename ZIP file'));
+                })
+                .catch(handleError('Download failed', () => rimraf(dir, () => {})))
+              })
+        });
+      })
+      .catch(handleError('Failed to create directory for artifact'));
+  });
 };

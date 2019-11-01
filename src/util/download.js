@@ -1,5 +1,9 @@
+/**
+ * @typedef {import('request').Options} Options
+ * @typedef {import('request').RequestCallback} RequestCallback
+ */
 const { parse } = require('url')
-const http = require('https')
+const request = require('request')
 const fs = require('fs')
 const { basename, resolve } = require('path')
 
@@ -8,22 +12,37 @@ const TIMEOUT = 60000
 /**
  * @param {String} url the URL to check the existence of
  */
-export const exists = url => new Promise((resolve, reject) => {
-  http.get(url).on('response', ({ statusCode }) => {
-    if (statusCode >= 300 || statusCode < 200) {
-      reject(statusCode);
+export const exists = (url, username, password) => new Promise((resolve, reject) => {
+  /**
+   * @type RequestCallback
+   */
+  let callback = (error, response, body) => {
+    let status = response.statusCode;
+    if (status >= 300 || status > 200) {
+      reject(status);
     } else {
       resolve(url);
     }
-  });
+  };
+  if (username && password) {
+    request.head(url, {
+      auth: {
+        user: username,
+        pass: password
+      }
+    }, callback);
+  } else {
+    request.head(url, callback);
+  }
 });
 
 /**
- * 
  * @param {String} url the URL to download
  * @param {String} path the path to download the URL to
+ * @param {String} username the username to use for authentication
+ * @param {String} password the password to use for authentication
  */
-export default function(url, path) {
+export default function(url, path, username, password) {
   const uri = parse(url)
   if (!path) {
     path = basename(uri.path)
@@ -33,12 +52,20 @@ export default function(url, path) {
   const file = fs.createWriteStream(path)
 
   return new Promise(function(resolve, reject) {
-    const request = http.get(uri.href).on('response', function(res) {
+    let auth = (username && password)? {
+      user: username,
+      pass: password
+    } : undefined;
+    request.get(uri.href, {timeout: TIMEOUT, auth: auth}).on('response', function(res) {
       if (res.statusCode > 299) {
         fs.unlink(path, () => {})
-        reject(new Error(`${uri.path} not found.`))
+        if (res.statusCode == 401) {
+          reject(new Error(`Authentication for ${uri.href} failed.`))
+        } else {
+          reject(new Error(`${uri.href} not found.`))
+        }
         return
-      } 
+      }
       const len = parseInt(res.headers['content-length'], 10)
       let downloaded = 0
       let percent = 0
@@ -55,12 +82,9 @@ export default function(url, path) {
           resolve(path)
         })
         .on('error', function (err) {
+          fs.unlink(path, () => {})
           reject(err)
         })
-    })
-    request.setTimeout(TIMEOUT, function() {
-      request.abort()
-      reject(new Error(`request timeout after ${TIMEOUT / 1000.0}s`))
     })
   })
 }
