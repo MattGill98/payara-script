@@ -9,7 +9,8 @@
   "scripts": {
     "clean": "rimraf lib",
     "build": "npm run clean && babel src -d lib",
-    "watch": "babel src -d lib --watch"
+    "watch": "babel src -d lib --watch",
+    "deploy": "npm run clean && npm install && npm run build && npm publish"
   },
   "keywords": [
     "cli",
