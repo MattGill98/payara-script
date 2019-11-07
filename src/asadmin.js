@@ -3,10 +3,16 @@ import yargs from 'yargs';
 import 'regenerator-runtime/runtime';
 import asadmin, { builder as asadminBuilder } from './util/asadmin';
 
-var argv = asadminBuilder(yargs
-    .scriptName('asadmin')
-    .usage('Usage: asadmin <command>')
-    .strict())
-    .parse();
+let asadminIndex = process.argv.indexOf(process.argv.find(arg => arg.match(/.+asadmin/)));
 
-asadmin(argv.command);
+// Don't parse any arguments after asadmin
+process.argv.splice(asadminIndex + 1, 0, '--');
+
+var argv = asadminBuilder(yargs
+  .scriptName('asadmin')
+  .usage('$0 <command>'))
+  .help(false)
+  .demandCommand(1)
+  .parse();
+
+asadmin(...process.argv.slice(asadminIndex + 2));
