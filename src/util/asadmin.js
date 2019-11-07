@@ -8,7 +8,7 @@ const asadminUtility = process.platform === 'win32'? 'asadmin.bat' : './asadmin'
 
 /**
  * @param {Argv} argv the Yargs instance
- * @returns {Argv} the Yargs instance, after checking that the active environment is valid
+ * @return {Argv} the Yargs instance, after checking that the active environment is valid
  */
 export const builder = argv =>
   argv
