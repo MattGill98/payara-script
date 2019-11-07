@@ -20,13 +20,21 @@ export const builder = argv => asadminBuilder(argv)
   });
 
 /**
+ * @param {Argv} argv the yargs arguments
+ * @return {Array<String>} the domain related arguments from the command line
+ */
+export const domainArgs = argv => {
+  let domainArgs = [];
+  if (argv.debug) {
+    domainArgs.push('--debug');
+  }
+  return domainArgs;
+};
+
+/**
  * @param {Arguments} argv the Yargs arguments
  */
 export const handler = argv => {
   console.log('Starting Payara Server...');
-  var domainArgs = [];
-  if (argv.debug) {
-    domainArgs.push('--debug');
-  }
-  asadmin('start-domain', domainArgs);
+  asadmin('start-domain', domainArgs(argv));
 };

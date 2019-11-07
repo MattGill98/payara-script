@@ -2,7 +2,8 @@
  * @typedef {import('yargs').Argv} Argv
  * @typedef {import('yargs').Arguments} Arguments
  */
-import asadmin, { builder as asadminBuilder } from '../util/asadmin';
+import asadmin from '../util/asadmin';
+import { builder as asadminBuilder, domainArgs } from './start';
 
 // Command Details
 export const command = 'restart';
@@ -18,5 +19,5 @@ export const builder = argv => asadminBuilder(argv);
  */
 export const handler = argv => {
   console.log('Restarting Payara Server...');
-  asadmin('restart-domain');
+  asadmin('restart-domain', domainArgs(argv));
 };
