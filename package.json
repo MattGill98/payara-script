@@ -1,6 +1,6 @@
 {
   "name": "payara-script",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A utility package for managing Payara Server versions.",
   "bin": {
     "payara": "lib/index.js",
@@ -8,7 +8,7 @@
   },
   "scripts": {
     "clean": "rimraf lib",
-    "build": "npm run clean && babel src -d lib",
+    "build": "babel src -d lib",
     "watch": "babel src -d lib --watch",
     "deploy": "npm run clean && npm install && npm run build && npm publish"
   },
@@ -22,12 +22,7 @@
     "url": "https://github.com/MattGill98/payara-script.git"
   },
   "dependencies": {
-    "@babel/cli": "^7.6.4",
-    "@babel/core": "^7.6.4",
-    "@babel/preset-env": "^7.6.3",
-    "@types/yargs": "^13.0.3",
     "configstore": "^5.0.0",
-    "eslint": "^6.5.1",
     "find-process": "^1.4.2",
     "mvn-artifact-url": "^4.0.0",
     "ncp": "^2.0.0",
@@ -37,5 +32,13 @@
     "rimraf": "^3.0.0",
     "tail": "^2.0.3",
     "yargs": "^14.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "@types/yargs": "^13.0.3",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.6.0"
   }
 }
