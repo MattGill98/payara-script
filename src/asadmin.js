@@ -8,7 +8,7 @@ let asadminIndex = process.argv.indexOf(process.argv.find(arg => arg.match(/.+as
 // Don't parse any arguments after asadmin
 process.argv.splice(asadminIndex + 1, 0, '--');
 
-var argv = asadminBuilder(yargs
+asadminBuilder(yargs
   .scriptName('asadmin')
   .usage('$0 <command>'))
   .help(false)
