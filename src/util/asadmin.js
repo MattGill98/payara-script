@@ -4,7 +4,9 @@ import path from 'path';
 import config from '../config';
 import globals from '../util/globals';
 
+const asadminDirectory = path.resolve(config.get('directory'), config.get('active').toString(), globals.UNZIP_NAME, 'bin');
 const asadminUtility = process.platform === 'win32'? 'asadmin.bat' : './asadmin';
+const asadminPath = path.resolve(asadminDirectory, asadminUtility);
 
 /**
  * @param {Argv} argv the Yargs instance
@@ -27,8 +29,7 @@ export const builder = argv =>
  * @param {Array} argv an array 
  */
 export default async (...argv) => {
-  return spawn(asadminUtility, argv, {
-    stdio: 'inherit',
-    cwd: path.resolve(config.get('directory'), config.get('active').toString(), globals.UNZIP_NAME, 'bin')
+  return spawn(asadminPath, argv, {
+    stdio: 'inherit'
   });
 };
