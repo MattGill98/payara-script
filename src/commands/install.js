@@ -46,6 +46,11 @@ export const builder = argv =>
       alias: 'n',
       description: 'The name of the installation folder'
     })
+    .option('profile', {
+      alias: 'p',
+      description: 'The Payara profile to download',
+      choices: ['web']
+    })
     .example('$0 install 5.191', 'Install Payara version 5.191 from maven central.')
     .example('$0 install 5.193.RC3', 'Install Payara version 5.193.RC3 from the Payara nexus. Requires that the nexus credentials be configured via \'payara set\'.')
     .example('$0 install --name local /path/to/jar', 'Install a local Payara ZIP and call it \'local\'.');
@@ -96,7 +101,7 @@ export const handler = argv => {
            */
           let artifact = {
             groupId: 'fish.payara.distributions',
-            artifactId: 'payara',
+            artifactId: 'payara' + (argv.profile? '-' + argv.profile : ''),
             version: argv.artifact,
             extension: 'zip'
           };
