@@ -26,16 +26,16 @@ export const builder = argv =>
   argv
     .help()
     .check(argv => {
-      // If the selected artifact is a file
-      if (isLocalFile(argv.artifact)) {
-        argv.artifact = path.resolve(argv.artifact.toString());
-        // Default the name to 'local'
-        if (!argv.name) {
+      if (!argv.name) {
+        // If the selected artifact is a file
+        if (isLocalFile(argv.artifact)) {
+          argv.artifact = path.resolve(argv.artifact.toString());
+          // Default the name to 'local'
           argv.name = 'local'
+        } else {
+          // Assume the artifact is a version
+          argv.name = argv.artifact;
         }
-      } else {
-        // Assume the artifact is a version
-        argv.name = argv.artifact;
       }
       if (listPackagesSync().includes(argv.name)) {
         throw 'That artifact is already installed.';
