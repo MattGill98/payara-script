@@ -13,7 +13,7 @@ import { handleError } from '../util/error';
 import globals from '../util/globals';
 import { copyFile, mkdir, rename } from '../util/promise-fs';
 import { unzip } from './reset';
-import { listPackages } from './status';
+import { listPackagesSync } from './status';
 
 // Command Details
 export const command = 'install [options] <artifact>';
@@ -25,7 +25,7 @@ export const desc = 'Install a Payara ZIP';
 export const builder = argv => 
   argv
     .help()
-    .check(async argv => {
+    .check(argv => {
       // If the selected artifact is a file
       if (isLocalFile(argv.artifact)) {
         argv.artifact = path.resolve(argv.artifact.toString());
@@ -37,7 +37,7 @@ export const builder = argv =>
         // Assume the artifact is a version
         argv.name = argv.artifact;
       }
-      if ((await listPackages()).includes(argv.name)) {
+      if (listPackagesSync().includes(argv.name)) {
         throw 'That artifact is already installed.';
       }
       return true;

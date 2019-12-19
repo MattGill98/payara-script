@@ -4,6 +4,7 @@
 import path from 'path';
 import config from '../config';
 import globals from '../util/globals';
+import { readdirSync } from 'fs';
 import { exists, readdir } from '../util/promise-fs';
 import { checkStatus } from './kill';
 
@@ -13,20 +14,25 @@ export const desc = 'List the installed Payara environments, and which one is se
 
 const baseDirectory = config.get('directory');
 
+function isPayaraDir(dir) {
+  return exists(path.resolve(baseDirectory, dir, globals.UNZIP_NAME, 'glassfish', 'modules'));
+}
+
 /**
  * @return {Promise<Array<String>>} a promise that resolves to a list of all existing installs
  */
-export const listPackages = () => new Promise((resolve, reject) => {
-  readdir(baseDirectory).then(contents => {
-    Promise
-      .all(
-        contents.map(folder => 
-            exists(path.resolve(baseDirectory, folder, globals.UNZIP_NAME, 'glassfish', 'domains', 'domain1'))
-            .then(exists => exists? folder : false))
-      )
-      .then(installs => resolve(installs.filter(install => install !== false)));
-  }).catch(e => reject(e));
-});
+export const listPackages = async () => {
+  let contents = await readdir(baseDirectory);
+  return contents.filter(isPayaraDir);
+};
+
+/**
+ * @return {Array<String>} a list of all existing installs
+ */
+export const listPackagesSync = () => {
+  let contents = readdirSync(baseDirectory);
+  return contents.filter(isPayaraDir);
+};
 
 /**
  * @param {Arguments} argv the Yargs arguments
