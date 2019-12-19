@@ -6,7 +6,7 @@
 import fs from 'fs';
 import url from 'mvn-artifact-url';
 import path from 'path';
-import rimraf from 'rimraf';
+import rmfr from 'rmfr';
 import config from '../config';
 import download, { exists } from '../util/download';
 import { handleError } from '../util/error';
@@ -76,7 +76,7 @@ export const handler = argv => {
   let dir = path.resolve(config.get('directory'), argv.name.toString());
 
   // Delete the install directory if it exists
-  rimraf(dir, () => {
+  rmfr(dir).then(() => {
     // Create the install directory
     mkdir(dir)
       .then(() => {
@@ -119,7 +119,7 @@ export const handler = argv => {
                   } else {
                     console.error('Artifact not found.');
                   }
-                  rimraf(dir, () => {});
+                  rmfr(dir);
                 })
                 .catch(resolved => {
                   // Download the artifact
@@ -133,7 +133,7 @@ export const handler = argv => {
                       })
                       .catch(handleError('Failed to rename ZIP file'));
                   })
-                  .catch(handleError('Download failed', () => rimraf(dir, () => {})));
+                  .catch(handleError('Download failed', () => rmfr(dir)));
                 });
           });
         }

@@ -7,7 +7,7 @@ import { ncp } from 'ncp';
 import os from 'os';
 import path from 'path';
 import extract from 'progress-extract';
-import rimraf from 'rimraf';
+import rmfr from 'rmfr';
 import config from '../config';
 import { builder as asadminBuilder } from '../util/asadmin';
 import { handleError } from '../util/error';
@@ -44,7 +44,7 @@ export const unzip = packageDir => {
               throw err;
             }
             console.log('Extract completed!');
-            rimraf(data.temp, handleError('Unable to delete temp directory'));
+            rmfr(data.temp).catch(handleError('Unable to delete temp directory'));
           });
         })
         .catch(handleError('Failed to read from extracted directory'));
@@ -63,12 +63,7 @@ export const handler = argv => {
   let dir = path.resolve(config.get('directory'), config.get('active').toString());
 
   // Delete the exploded dir
-  rimraf(findData(dir).explode, err => {
-    if (err) {
-      handleError('Unable to delete install directory')(err);
-    } else {
-      // Extract the ZIP
-      unzip(dir);
-    }
-  });
+  rmfr(findData(dir).explode)
+    .then(() => unzip(dir))
+    .catch(handleError('Unable to delete install directory'));
 };
