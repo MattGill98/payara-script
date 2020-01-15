@@ -11,7 +11,7 @@ import config from '../config';
 import download, { exists } from '../util/download';
 import { handleError } from '../util/error';
 import globals from '../util/globals';
-import { copyFile, mkdir, rename } from '../util/promise-fs';
+import { copyFile, mkdir, rename, symlink } from '../util/promise-fs';
 import { unzip } from './reset';
 import { listPackagesSync } from './status';
 
@@ -71,14 +71,11 @@ const repositories = [
 const username = config.get('username');
 const password = config.get('password');
 
-/**
- * @param {Arguments} argv the Yargs arguments
- */
-export const handler = argv => {
+export function install(artifact, name, linkZip, profile) {
   console.log('Installing Payara environment...');
 
   // Get install directory
-  let dir = path.resolve(config.get('directory'), argv.name.toString());
+  let dir = path.resolve(config.get('directory'), name.toString());
 
   // Delete the install directory if it exists
   rmfr(dir).then(() => {
@@ -86,27 +83,31 @@ export const handler = argv => {
     mkdir(dir)
       .then(() => {
         // If the artifact is a local file
-        if (fs.existsSync(argv.artifact)) {
-          // Copy the ZIP
-          copyFile(argv.artifact, path.resolve(dir, globals.ZIP_NAME))
-            .then(() => {
-              // Unzip the artifact
-              unzip(dir);
-            })
-            .catch(handleError('Failed to rename ZIP file'));
+        if (fs.existsSync(artifact)) {
+          if (linkZip) {
+            // Link to the ZIP
+            symlink(artifact, path.resolve(dir, globals.ZIP_NAME))
+              .then(() => unzip(dir))
+              .catch(handleError('Failed to rename ZIP file'));
+          } else {
+            // Copy the ZIP
+            copyFile(artifact, path.resolve(dir, globals.ZIP_NAME))
+              .then(() => unzip(dir))
+              .catch(handleError('Failed to rename ZIP file'));
+          }
         } else {
           /**
            * The artifact to download
            * @type Artifact
            */
-          let artifact = {
+          let artifactCoordinates = {
             groupId: 'fish.payara.distributions',
-            artifactId: 'payara' + (argv.profile? '-' + argv.profile : ''),
-            version: argv.artifact,
+            artifactId: 'payara' + (profile? '-' + profile : ''),
+            version: artifact,
             extension: 'zip'
           };
 
-          let urls = repositories.map(repository => url(artifact, repository));
+          let urls = repositories.map(repository => url(artifactCoordinates, repository));
   
           // Resolve all URLs to download from
           Promise.all(urls).then(resolvedUrls => {
@@ -144,4 +145,11 @@ export const handler = argv => {
         }
       }).catch(handleError('Failed to create directory for artifact'));
   });
+}
+
+/**
+ * @param {Arguments} argv the Yargs arguments
+ */
+export const handler = argv => {
+  install(argv.artifact, argv.name, false, argv.profile);
 };
