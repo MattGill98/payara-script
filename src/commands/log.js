@@ -2,11 +2,12 @@
  * @typedef {import('yargs').Argv} Argv
  * @typedef {import('yargs').Arguments} Arguments
  */
+import { existsSync } from 'fs';
 import path from 'path';
 import { Tail } from 'tail';
-import {existsSync} from 'fs';
 import config from '../config';
 import { builder as asadminBuilder } from '../util/asadmin';
+import { handleError } from '../util/error';
 import globals from '../util/globals';
 
 // Command Details
@@ -57,9 +58,6 @@ export const handler = argv => {
   }
   dirBuilder = path.resolve(dirBuilder, 'logs', 'server.log');
 
-  try {
-    followFile(dirBuilder);
-  } catch (error) {
-    console.error('Server log not found.');
-  }
+  followFile(dirBuilder)
+    .catch(handleError('Error reading server log.'));
 };
