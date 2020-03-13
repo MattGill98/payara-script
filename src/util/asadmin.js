@@ -4,7 +4,9 @@ import path from 'path';
 import config from '../config';
 import globals from '../util/globals';
 
-const asadminDirectory = path.resolve(config.get('directory'), config.get('active').toString(), globals.UNZIP_NAME, 'bin');
+let activeDir = config.get('active');
+if (!activeDir) activeDir = 'default';
+const asadminDirectory = path.resolve(config.get('directory'), activeDir.toString(), globals.UNZIP_NAME, 'bin');
 const asadminUtility = process.platform === 'win32'? 'asadmin.bat' : './asadmin';
 const asadminPath = path.resolve(asadminDirectory, asadminUtility);
 
