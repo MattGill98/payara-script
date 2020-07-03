@@ -63,8 +63,8 @@ function isLocalFile(location) {
 // A list of repositories to try and download from
 const repositories = [
   undefined,
-  'https://nexus.payara.fish/service/local/repositories/payara-patches/content/',
-  'https://nexus.payara.fish/service/local/repositories/payara-staging/content/'
+  'https://nexus.payara.fish/service/local/repositories/payara-patches/',
+  'https://nexus.payara.fish/service/local/repositories/payara-staging/'
 ];
 
 // Get configured nexus credentials
