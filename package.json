@@ -1,6 +1,6 @@
 {
   "name": "payara-script",
-  "version": "2.0.4",
+  "version": "2.1.0",
   "description": "A utility package for managing Payara Server versions.",
   "bin": {
     "payara": "lib/index.js",
